@@ -56,7 +56,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
-    animation: pulse 2s infinite, float 3s ease-in-out infinite;
+    animation: pulse 15s infinite, float 19s ease-in-out infinite;
     margin-bottom: 30px;
 }
 
@@ -72,7 +72,7 @@ body {
     height: 100%;
     width: 0;
     background: linear-gradient(90deg, #FF4500, #9400D3);
-    animation: loading 2.5s ease-out forwards;
+    animation: loading 3.5s ease-out forwards;
 }
 
 @keyframes loading {
@@ -230,7 +230,7 @@ header {
     letter-spacing: 2px;
     color: var(--accent-color);
     text-shadow: 0 0 10px var(--accent-color);
-    animation: pulse 2s infinite;
+    animation: pulse 6s infinite;
     flex-grow: 1;
     text-align: center;
 }

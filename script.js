@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // School button functionality - redirect to wgatsal.channel
         schoolBtn.addEventListener('click', () => {
-            window.open('https://www.wgatsal.channel', '_blank');
+            window.open('https://wiru2024-io.vercel.app/', '_blank');
             menuDropdown.classList.remove('active');
         });
 

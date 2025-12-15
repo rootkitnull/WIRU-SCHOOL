@@ -44,6 +44,21 @@ cat << 'EOF' > index.html
             <div class="sliding-text">THIS WEB WAS DEVELOPED BY VIKI</div>
         </div>
 
+        <!-- Modern Menu Button -->
+        <div class="menu-container">
+            <button id="menu-btn" class="menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div id="menu-dropdown" class="menu-dropdown">
+                <button id="about-btn" class="menu-item">
+                    <i class="fas fa-info-circle"></i> About
+                </button>
+                <button id="school-btn" class="menu-item">
+                    <i class="fas fa-graduation-cap"></i> School
+                </button>
+            </div>
+        </div>
+
         <div class="wallpaper-container">
             <img id="wallpaper" src="" alt="Wallpaper">
             <div class="overlay"></div>
@@ -51,13 +66,7 @@ cat << 'EOF' > index.html
 
         <header>
             <div class="header-content">
-                <button id="about-btn" class="info-btn">
-                    <span class="info-symbol">¡</span>
-                </button>
                 <h1 class="title">GAMER ARCHIVE</h1>
-                <button id="school-btn" class="school-btn">
-                    <i class="fas fa-graduation-cap"></i>
-                </button>
             </div>
         </header>
 
@@ -101,14 +110,14 @@ cat << 'EOF' > index.html
         <main>
             <!-- Loading Indicator -->
             <div id="loading-indicator" class="loading-indicator">
-                <div class="loading-text">Fetching gallery...</div>
-                <div class="loading-animation">
-                    <div class="loading-box"></div>
-                    <div class="loading-box"></div>
-                    <div class="loading-box"></div>
+                <div class="loading-circle">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
                 </div>
+                <div class="loading-text">Loading</div>
             </div>
-            
+
             <div id="image-gallery" class="gallery-grid">
                 <!-- Images and videos will be dynamically inserted here by JavaScript -->
             </div>
@@ -154,6 +163,8 @@ cat << 'EOF' > style.css
     --shadow: 0 4px 8px rgba(0,0,0,0.5);
     --glow: 0 0 10px var(--accent-color);
     --gradient: linear-gradient(135deg, var(--secondary-color), var(--tertiary-color));
+    --modern-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --modern-accent: #667eea;
 }
 
 * {
@@ -179,7 +190,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #121212, #8B0000, #9400D3);
+    background: var(--modern-gradient);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -192,15 +203,15 @@ body {
 }
 
 .logo-text {
-    background: linear-gradient(45deg, #FF4500, #9400D3);
-    color: white;
+    background: linear-gradient(45deg, #fff, #f0f0f0);
+    color: #333;
     padding: 15px 30px;
     border-radius: 30px;
     font-weight: bold;
     font-size: 2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     animation: pulse 2s infinite, float 3s ease-in-out infinite;
     margin-bottom: 30px;
 }
@@ -216,7 +227,7 @@ body {
 .loading-progress {
     height: 100%;
     width: 0;
-    background: linear-gradient(90deg, #FF4500, #9400D3);
+    background: linear-gradient(90deg, #fff, #f0f0f0);
     animation: loading 2.5s ease-out forwards;
 }
 
@@ -231,9 +242,9 @@ body {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 0 20px rgba(255, 69, 0, 0.7); }
-    50% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.9), 0 0 40px rgba(148, 0, 211, 0.7); }
-    100% { box-shadow: 0 0 20px rgba(255, 69, 0, 0.7); }
+    0% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
 }
 
 /* Main Content Styles */
@@ -250,6 +261,78 @@ body {
     display: none;
 }
 
+/* Modern Menu Button */
+.menu-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.menu-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--modern-gradient);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.7);
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.menu-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.menu-item i {
+    margin-right: 10px;
+    color: var(--modern-accent);
+}
+
+.menu-item:hover {
+    background: rgba(102, 126, 234, 0.2);
+}
+
 /* Loading Indicator */
 .loading-indicator {
     display: flex;
@@ -261,41 +344,45 @@ body {
     text-align: center;
 }
 
-.loading-text {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    color: var(--accent-color);
-    text-shadow: 0 0 5px var(--accent-color);
-}
-
-.loading-animation {
+.loading-circle {
     display: flex;
     gap: 15px;
-    perspective: 1000px;
+    margin-bottom: 20px;
 }
 
-.loading-box {
-    width: 40px;
-    height: 40px;
-    background: var(--gradient);
-    border-radius: 8px;
-    animation: rotate3d 1.5s infinite ease-in-out;
-    box-shadow: var(--shadow);
+.circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--modern-gradient);
+    animation: circleAnimation 1.5s infinite ease-in-out;
 }
 
-.loading-box:nth-child(1) { animation-delay: -0.32s; }
-.loading-box:nth-child(2) { animation-delay: -0.16s; }
-.loading-box:nth-child(3) { animation-delay: 0s; }
+.circle:nth-child(1) { animation-delay: -0.32s; }
+.circle:nth-child(2) { animation-delay: -0.16s; }
+.circle:nth-child(3) { animation-delay: 0s; }
 
-@keyframes rotate3d {
+@keyframes circleAnimation {
     0%, 80%, 100% {
-        transform: rotateY(0deg) scale(1);
-        opacity: 1;
-    }
-    40% {
-        transform: rotateY(180deg) scale(0.8);
+        transform: scale(0.8);
         opacity: 0.5;
     }
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.loading-text {
+    font-size: 1.5rem;
+    color: var(--modern-accent);
+    text-shadow: 0 0 5px var(--modern-accent);
+    animation: textPulse 1.5s infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
 }
 
 /* Sliding Text Banner */
@@ -305,21 +392,21 @@ body {
     height: 30px;
     background-color: var(--primary-color);
     overflow: hidden;
-    border-bottom: 1px solid var(--accent-color);
+    border-bottom: 1px solid var(--modern-accent);
 }
 
 .sliding-text {
     position: absolute;
     white-space: nowrap;
-    animation: slideText 15s linear infinite;
+    animation: slideText 5s linear infinite;
     line-height: 30px;
     font-weight: bold;
     font-size: 1rem;
-    background: linear-gradient(90deg, #FF4500, #9400D3, #FF4500);
+    background: linear-gradient(90deg, var(--modern-accent), #764ba2, var(--modern-accent));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
+    text-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
 }
 
 @keyframes slideText {
@@ -362,7 +449,7 @@ header {
 
 .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
@@ -373,63 +460,12 @@ header {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--accent-color);
-    text-shadow: 0 0 10px var(--accent-color);
+    background: var(--modern-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
     animation: pulse 2s infinite;
-    flex-grow: 1;
-    text-align: center;
-}
-
-.info-btn, .school-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: var(--gradient);
-    border: none;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.info-btn:hover, .school-btn:hover {
-    transform: scale(1.1);
-    box-shadow: var(--glow);
-}
-
-.info-btn::before, .school-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-.info-btn:hover::before, .school-btn:hover::before {
-    left: 100%;
-}
-
-.info-symbol {
-    color: white;
-    font-weight: bold;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.school-btn i {
-    color: white;
-    font-size: 1.2rem;
 }
 
 .modal {
@@ -453,11 +489,11 @@ header {
     background-color: var(--box-bg-color);
     margin: 10% auto;
     padding: 20px;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid var(--modern-accent);
     width: 80%;
     max-width: 600px;
-    border-radius: 10px;
-    box-shadow: var(--glow);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
     animation: slideIn 0.3s;
 }
 
@@ -467,7 +503,7 @@ header {
 }
 
 .close, .zoom-close {
-    color: var(--accent-color);
+    color: var(--modern-accent);
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -489,23 +525,23 @@ header {
 }
 
 .info-box {
-    background-color: rgba(139, 0, 0, 0.3);
+    background-color: rgba(102, 126, 234, 0.1);
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid var(--secondary-color);
+    border-radius: 10px;
+    border: 1px solid var(--modern-accent);
     transition: all 0.3s ease;
 }
 
 .info-box:hover {
     transform: translateY(-5px);
-    box-shadow: var(--glow);
-    background-color: rgba(139, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+    background-color: rgba(102, 126, 234, 0.2);
 }
 
 .info-box strong {
     display: block;
     font-size: 0.9em;
-    color: var(--accent-color);
+    color: var(--modern-accent);
     margin-bottom: 5px;
 }
 
@@ -550,7 +586,7 @@ header {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: var(--gradient);
+    background: var(--modern-gradient);
     border: none;
     color: white;
     font-size: 1.2rem;
@@ -561,7 +597,7 @@ header {
 
 .zoom-btn:hover {
     transform: scale(1.1);
-    box-shadow: var(--glow);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.7);
 }
 
 main {
@@ -583,7 +619,7 @@ main {
 .gallery-item {
     position: relative;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: 15px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
     cursor: pointer;
@@ -593,7 +629,7 @@ main {
 
 .gallery-item:hover {
     transform: scale(1.05);
-    box-shadow: var(--glow);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
 }
 
 .gallery-item img,
@@ -622,7 +658,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(255, 69, 0, 0.3), transparent);
+    background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.3), transparent);
     transform: translateX(-100%);
     transition: transform 0.6s;
 }
@@ -640,7 +676,7 @@ main {
 }
 
 .pagination-btn {
-    background: var(--gradient);
+    background: var(--modern-gradient);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -671,7 +707,7 @@ main {
 
 .pagination-btn:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: var(--glow);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.7);
 }
 
 .pagination-btn:disabled {
@@ -683,8 +719,8 @@ main {
 #page-info {
     font-size: 1.1rem;
     font-weight: bold;
-    color: var(--accent-color);
-    text-shadow: 0 0 5px var(--accent-color);
+    color: var(--modern-accent);
+    text-shadow: 0 0 5px var(--modern-accent);
 }
 
 footer {
@@ -693,7 +729,7 @@ footer {
     text-align: center;
     padding: 1.5rem;
     margin-top: auto;
-    border-top: 1px solid var(--secondary-color);
+    border-top: 1px solid var(--modern-accent);
 }
 
 footer a {
@@ -705,9 +741,9 @@ footer a {
 }
 
 footer a:hover {
-    color: var(--accent-color);
+    color: var(--modern-accent);
     transform: translateY(-3px);
-    text-shadow: var(--glow);
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.7);
 }
 
 footer p {
@@ -722,53 +758,48 @@ footer p {
         font-size: 1.5rem;
         padding: 10px 20px;
     }
-    
+
     .loading-bar {
         width: 200px;
     }
-    
+
     .text-banner {
         height: 25px;
     }
-    
+
     .sliding-text {
         font-size: 0.8rem;
         line-height: 25px;
     }
-    
+
     .wallpaper-container {
         height: 200px;
     }
-    
+
     .header-content {
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
     }
-    
+
     .title {
         font-size: 1.5rem;
         text-align: center;
     }
-    
-    .info-btn, .school-btn {
-        width: 35px;
-        height: 35px;
-    }
-    
+
     .gallery-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
     }
-    
+
     main {
         padding: 1rem;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 20% auto;
     }
-    
+
     .about-info {
         grid-template-columns: 1fr;
     }
@@ -782,7 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Splash screen functionality
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
-    
+
     // Hide splash screen after 2.5 seconds for faster feel
     setTimeout(() => {
         splashScreen.style.opacity = '0';
@@ -793,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeGallery();
         }, 500);
     }, 2500);
-    
+
     function initializeGallery() {
         const gallery = document.getElementById('image-gallery');
         const prevButton = document.getElementById('prev-btn');
@@ -806,6 +837,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const wallpaper = document.getElementById('wallpaper');
         const loadingIndicator = document.getElementById('loading-indicator');
         
+        // Menu functionality
+        const menuBtn = document.getElementById('menu-btn');
+        const menuDropdown = document.getElementById('menu-dropdown');
+
         // Zoom modal elements
         const zoomModal = document.getElementById('zoom-modal');
         const zoomImage = document.getElementById('zoom-image');
@@ -813,47 +848,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const zoomInBtn = document.getElementById('zoom-in');
         const zoomOutBtn = document.getElementById('zoom-out');
         const zoomResetBtn = document.getElementById('zoom-reset');
-        
+
         // Zoom variables
         let currentZoom = 1;
         let isDragging = false;
         let startX, startY, scrollLeft, scrollTop;
         let currentTranslateX = 0;
         let currentTranslateY = 0;
-        
+
         // Load wallpaper if exists
         wallpaper.src = 'wallpaper/A.jpg';
         wallpaper.onerror = function() {
             // If wallpaper doesn't exist, use a gradient background
             wallpaper.style.display = 'none';
-            document.querySelector('.wallpaper-container').style.background = 'linear-gradient(135deg, #121212, #8B0000, #9400D3)';
+            document.querySelector('.wallpaper-container').style.background = 'var(--modern-gradient)';
         };
-        
+
+        // Menu dropdown functionality
+        menuBtn.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuBtn.contains(event.target) && !menuDropdown.contains(event.target)) {
+                menuDropdown.classList.remove('active');
+            }
+        });
+
         // Modal functionality
         aboutBtn.addEventListener('click', () => {
             modal.style.display = 'block';
+            menuDropdown.classList.remove('active');
         });
-        
+
         closeBtn.addEventListener('click', () => {
             modal.style.display = 'none';
         });
-        
+
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
         });
-        
+
         // School button functionality - redirect to wgatsal.channel
         schoolBtn.addEventListener('click', () => {
             window.open('https://www.wgatsal.channel', '_blank');
+            menuDropdown.classList.remove('active');
         });
-        
+
         // Check for media files asynchronously
         async function checkMediaFiles() {
             const imageFiles = [];
             const videoFiles = [];
-            
+
             // Check for images from 1.jpg to 100.jpg
             for (let i = 1; i <= 100; i++) {
                 try {
@@ -865,7 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // File doesn't exist, continue
                 }
             }
-            
+
             // Check for videos from A.mp4 to Z.mp4
             const videoLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             for (let i = 0; i < videoLetters.length; i++) {
@@ -879,10 +928,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     // File doesn't exist, continue
                 }
             }
-            
+
             return [...imageFiles, ...videoFiles];
         }
-        
+
         // Initialize gallery with media files
         checkMediaFiles().then(allMedia => {
             // Hide loading indicator
@@ -902,9 +951,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 mediaToShow.forEach(mediaName => {
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
-                    
+
                     const fileExtension = mediaName.split('.').pop().toLowerCase();
-                    
+
                     if (fileExtension === 'mp4') {
                         const video = document.createElement('video');
                         video.src = `files/${mediaName}`;
@@ -914,18 +963,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         video.loop = true;
                         video.autoplay = true; // Auto-play videos
                         video.loading = 'lazy';
-                        
+
                         // Play video on hover
                         galleryItem.addEventListener('mouseenter', () => {
                             video.play();
                         });
-                        
+
                         galleryItem.addEventListener('mouseleave', () => {
                             video.pause();
                         });
-                        
+
                         galleryItem.appendChild(video);
-                        
+
                         // Add click event for video to play/pause
                         galleryItem.addEventListener('click', (e) => {
                             e.preventDefault();
@@ -940,15 +989,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = `files/${mediaName}`;
                         img.alt = `Picture ${mediaName}`;
                         img.loading = 'lazy'; // Lazy load images for performance
-                        
+
                         // Add click event for zoom
                         img.addEventListener('click', () => {
                             openZoomModal(`files/${mediaName}`);
                         });
-                        
+
                         galleryItem.appendChild(img);
                     }
-                    
+
                     gallery.appendChild(galleryItem);
                 });
 
@@ -964,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     prevButton.style.display = 'flex';
                 }
-                
+
                 // Disable/Enable buttons based on current page
                 prevButton.disabled = currentPage === 1;
                 nextButton.disabled = currentPage === totalPages || totalPages === 0;
@@ -1053,13 +1102,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
                 e.preventDefault();
-                
+
                 const x = e.pageX - startX;
                 const y = e.pageY - startY;
-                
+
                 currentTranslateX = x;
                 currentTranslateY = y;
-                
+
                 updateZoom();
             });
 
@@ -1079,13 +1128,13 @@ document.addEventListener('DOMContentLoaded', () => {
             zoomImage.addEventListener('touchmove', (e) => {
                 if (!isDragging || e.touches.length !== 1) return;
                 e.preventDefault();
-                
+
                 const x = e.touches[0].pageX - touchStartX;
                 const y = e.touches[0].pageY - touchStartY;
-                
+
                 currentTranslateX = x;
                 currentTranslateY = y;
-                
+
                 updateZoom();
             });
 
@@ -1123,8 +1172,14 @@ echo "-------------------------------------------"
 echo ""
 echo "📝 Setup Summary:"
 echo "✅ Created index.html"
-echo "✅ Created style.css" 
+echo "✅ Created style.css"
 echo "✅ Created script.js"
 echo "✅ Created directories: files/ wallpaper/"
 echo ""
 echo "🎯 Your gallery is ready! Add your media files and open index.html in a browser."
+echo ""
+echo "🚀 New Features:"
+echo "✅ Modern UI with updated color scheme"
+echo "✅ Animated loading indicator with circles"
+echo "✅ Slower sliding text animation (5 seconds)"
+echo "✅ Single menu button in top-left corner"

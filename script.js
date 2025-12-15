@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Splash screen functionality
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
-    
+
     // Hide splash screen after 2.5 seconds for faster feel
     setTimeout(() => {
         splashScreen.style.opacity = '0';
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeGallery();
         }, 500);
     }, 2500);
-    
+
     function initializeGallery() {
         const gallery = document.getElementById('image-gallery');
         const prevButton = document.getElementById('prev-btn');
@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const wallpaper = document.getElementById('wallpaper');
         const loadingIndicator = document.getElementById('loading-indicator');
         
+        // Menu functionality
+        const menuBtn = document.getElementById('menu-btn');
+        const menuDropdown = document.getElementById('menu-dropdown');
+
         // Zoom modal elements
         const zoomModal = document.getElementById('zoom-modal');
         const zoomImage = document.getElementById('zoom-image');
@@ -33,47 +37,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const zoomInBtn = document.getElementById('zoom-in');
         const zoomOutBtn = document.getElementById('zoom-out');
         const zoomResetBtn = document.getElementById('zoom-reset');
-        
+
         // Zoom variables
         let currentZoom = 1;
         let isDragging = false;
         let startX, startY, scrollLeft, scrollTop;
         let currentTranslateX = 0;
         let currentTranslateY = 0;
-        
+
         // Load wallpaper if exists
         wallpaper.src = 'wallpaper/A.jpg';
         wallpaper.onerror = function() {
             // If wallpaper doesn't exist, use a gradient background
             wallpaper.style.display = 'none';
-            document.querySelector('.wallpaper-container').style.background = 'linear-gradient(135deg, #121212, #8B0000, #9400D3)';
+            document.querySelector('.wallpaper-container').style.background = 'var(--modern-gradient)';
         };
-        
+
+        // Menu dropdown functionality
+        menuBtn.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuBtn.contains(event.target) && !menuDropdown.contains(event.target)) {
+                menuDropdown.classList.remove('active');
+            }
+        });
+
         // Modal functionality
         aboutBtn.addEventListener('click', () => {
             modal.style.display = 'block';
+            menuDropdown.classList.remove('active');
         });
-        
+
         closeBtn.addEventListener('click', () => {
             modal.style.display = 'none';
         });
-        
+
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
         });
-        
+
         // School button functionality - redirect to wgatsal.channel
         schoolBtn.addEventListener('click', () => {
             window.open('https://www.wgatsal.channel', '_blank');
+            menuDropdown.classList.remove('active');
         });
-        
+
         // Check for media files asynchronously
         async function checkMediaFiles() {
             const imageFiles = [];
             const videoFiles = [];
-            
+
             // Check for images from 1.jpg to 100.jpg
             for (let i = 1; i <= 100; i++) {
                 try {
@@ -85,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // File doesn't exist, continue
                 }
             }
-            
+
             // Check for videos from A.mp4 to Z.mp4
             const videoLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             for (let i = 0; i < videoLetters.length; i++) {
@@ -99,10 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     // File doesn't exist, continue
                 }
             }
-            
+
             return [...imageFiles, ...videoFiles];
         }
-        
+
         // Initialize gallery with media files
         checkMediaFiles().then(allMedia => {
             // Hide loading indicator
@@ -122,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 mediaToShow.forEach(mediaName => {
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
-                    
+
                     const fileExtension = mediaName.split('.').pop().toLowerCase();
-                    
+
                     if (fileExtension === 'mp4') {
                         const video = document.createElement('video');
                         video.src = `files/${mediaName}`;
@@ -134,18 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         video.loop = true;
                         video.autoplay = true; // Auto-play videos
                         video.loading = 'lazy';
-                        
+
                         // Play video on hover
                         galleryItem.addEventListener('mouseenter', () => {
                             video.play();
                         });
-                        
+
                         galleryItem.addEventListener('mouseleave', () => {
                             video.pause();
                         });
-                        
+
                         galleryItem.appendChild(video);
-                        
+
                         // Add click event for video to play/pause
                         galleryItem.addEventListener('click', (e) => {
                             e.preventDefault();
@@ -160,15 +178,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = `files/${mediaName}`;
                         img.alt = `Picture ${mediaName}`;
                         img.loading = 'lazy'; // Lazy load images for performance
-                        
+
                         // Add click event for zoom
                         img.addEventListener('click', () => {
                             openZoomModal(`files/${mediaName}`);
                         });
-                        
+
                         galleryItem.appendChild(img);
                     }
-                    
+
                     gallery.appendChild(galleryItem);
                 });
 
@@ -184,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     prevButton.style.display = 'flex';
                 }
-                
+
                 // Disable/Enable buttons based on current page
                 prevButton.disabled = currentPage === 1;
                 nextButton.disabled = currentPage === totalPages || totalPages === 0;
@@ -273,13 +291,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
                 e.preventDefault();
-                
+
                 const x = e.pageX - startX;
                 const y = e.pageY - startY;
-                
+
                 currentTranslateX = x;
                 currentTranslateY = y;
-                
+
                 updateZoom();
             });
 
@@ -299,13 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
             zoomImage.addEventListener('touchmove', (e) => {
                 if (!isDragging || e.touches.length !== 1) return;
                 e.preventDefault();
-                
+
                 const x = e.touches[0].pageX - touchStartX;
                 const y = e.touches[0].pageY - touchStartY;
-                
+
                 currentTranslateX = x;
                 currentTranslateY = y;
-                
+
                 updateZoom();
             });
 
